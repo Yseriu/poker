@@ -17,6 +17,7 @@ class table
 
     public $id;
     public $nom;
+    public $minMise;
     public $pot;
     public $cartes;
     public $players;
@@ -101,7 +102,7 @@ class table
     public function getPlayers()
     {
         $this->players = array();
-        $q = $this->pdo->prepare("SELECT * FROM players WHERE tabID=:id");
+        $q = $this->pdo->prepare("SELECT * FROM player WHERE tabID=:id");
         $q->bindValue('id', $this->getId());
         $q->execute();
         while($e = $q->fetch())
@@ -127,4 +128,42 @@ class table
         $this->pdo = $pdo;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getMinMise()
+    {
+        return $this->minMise;
+    }
+
+    /**
+     * @param mixed $minMise
+     */
+    public function setMinMise($minMise)
+    {
+        $this->minMise = $minMise;
+    }
+
+
+    /**
+     * Format
+     *
+     * # followed by the amount of players
+     * #s followes by player names, as much as the amount of player given above
+     * # followed by the min keb
+     *
+     * ends with new line \n
+     * @return string
+     */
+    public function __toString()
+    {
+        $ans = '#'. strval(sizeof($this->getPlayers()));
+        foreach ($this->getPlayers() as $p)
+        {
+            /** @var $p player */
+            $ans .= '#' . $p->getNom();
+        }
+        $ans .= '#' . strval($this->getMinMise());
+        return $ans . '\n';
+    }
 }
