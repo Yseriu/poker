@@ -39,6 +39,25 @@ class table
         $tab->setPdo($pdo);
         return $tab;
     }
+    
+    public static function getAmount(PDO $pdo)
+    {
+    	$q = $pdo->query("SELECT * FROM 'tab'");
+    	return $q->rowCount();
+    }
+    
+    public static function getList(PDO $pdo)
+    {
+	    $ans = "#";
+    	$q = $pdo->query("SELECT * FROM 'tab'");
+    	$ans .= strval($q->rowCount());
+    	$q->setFetchMode(PDO::FETCH_CLASS, table);
+    	while ($t = $q->fetch())
+    	{
+    		$ans .= $t;
+    	}
+    	return $ans;
+    }
 
     /**
      * @return mixed
@@ -107,7 +126,7 @@ class table
         $q->execute();
         while($e = $q->fetch())
         {
-            array_push($this->players, user::get($this->pdo, $e['unixid']));
+            array_push($this->players, player::get($this->getPdo(), $e['unixid']));
         }
         return $this;
     }
@@ -157,13 +176,17 @@ class table
      */
     public function __toString()
     {
-        $ans = '#'. strval(sizeof($this->getPlayers()));
+    	$ans = "";
+    	$ans .= '#' . $this->getId();
+    	$ans .= '#' . $this->getNom();
+        $ans .= '#'. strval(sizeof($this->getPlayers()));
         foreach ($this->getPlayers() as $p)
         {
             /** @var $p player */
             $ans .= '#' . $p->getNom();
         }
         $ans .= '#' . strval($this->getMinMise());
+        $ans .= '#' . strval();
         return $ans . '\n';
     }
 }

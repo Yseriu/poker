@@ -12,6 +12,18 @@ class player extends user
     public $hand;
     public $status;
     public $tabId;
+    public $mise;
+    
+    public static $COUCHE = 0;
+    public static $PASSE = 1;
+    public static $MISE = 2;
+    public static $CHECK = 3;
+    
+    public function __construct__(array $data)
+    {
+    	parent::__construct__($data);
+    	$this->setStatus(isset($data['status']) ? $data['status'] : player::COUCHE);
+    }
 
     public function getPlayersAtTable(PDO $pdo, $tabId)
     {
@@ -19,7 +31,13 @@ class player extends user
     }
 
 
-
+	public static function get(PDO $pdo, $uId, $tabId)
+	{
+		$u = parent::get($pdo, $uId);
+		$q = $pdo->prepare("SELECT * FROM 'player' WHERE user=:user AND tab=:table");
+		$q->bindValue('user', $u->getId());
+		$q->bindValue('table', $tabId);
+	}
 
     /**
      * @return mixed
