@@ -9,6 +9,7 @@
 
 require_once('user.php');
 require_once('player.php');
+require_once('hand.php');
 
 class table
 {
@@ -22,6 +23,7 @@ class table
     public $cartes;
     public $players;
 
+    public static $CARTESBASE = array('12', '13', '14', '15', '16', '17', '18', '19', '1A', '1B', '1C', '1D', '1E', '22', '23', '24', '25', '26', '27', '28', '29', '2A', '2B', '2C', '2D', '2E', '32', '33', '34', '35', '36', '37', '38', '39', '3A', '3B', '3C', '3D', '3E', '42', '43', '44', '45', '46', '47', '48', '49', '4A', '4B', '4C', '4D', '4E');
 
     /**
      * @param PDO $pdo
@@ -51,7 +53,7 @@ class table
 	    $ans = "#";
     	$q = $pdo->query("SELECT * FROM 'tab'");
     	$ans .= strval($q->rowCount());
-    	$q->setFetchMode(PDO::FETCH_CLASS, table);
+    	$q->setFetchMode(PDO::FETCH_CLASS, 'table');
     	while ($t = $q->fetch())
     	{
     		$ans .= $t;
@@ -126,7 +128,7 @@ class table
         $q->execute();
         while($e = $q->fetch())
         {
-            array_push($this->players, player::get($this->getPdo(), $e['unixid']));
+            array_push($this->players, player::get($this->getPdo(), $e['unixid'], $this->getId()));
         }
         return $this;
     }
@@ -148,7 +150,7 @@ class table
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getMinMise()
     {
@@ -156,7 +158,7 @@ class table
     }
 
     /**
-     * @param mixed $minMise
+     * @param int $minMise
      */
     public function setMinMise($minMise)
     {
@@ -186,7 +188,25 @@ class table
             $ans .= '#' . $p->getNom();
         }
         $ans .= '#' . strval($this->getMinMise());
-        $ans .= '#' . strval();
+        // $ans .= '#' . strval();
         return $ans . '\n';
+    }
+
+
+    public static function shuffle()
+    {
+        $shuffled = array();
+        $notInside = self::$CARTESBASE;
+        while ($notInside) {
+            $x = rand(0, sizeof($notInside));
+            array_push($shuffled, $notInside[$x]);
+            array_splice($notInside, $x, 1);
+        }
+        return $shuffled;
+    }
+
+    public function compareHands($h1, $h2)
+    {
+
     }
 }
