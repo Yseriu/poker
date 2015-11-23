@@ -213,9 +213,27 @@ class hand
 
     public function sorted()
     {
+        $ans = '';
         $arr = array_map(function($x){return $x[1];}, $this->getH());
+        $mul = array();
+        foreach($arr as $c)
+        {
+            $cnt = $this->count($c);
+            if($cnt > 1 and strpos(implode('', $mul), $c) === False)
+                $mul[$c] = $cnt;
+        }
+        arsort($mul);
+        foreach($mul as $k => $c)
+        {
+            $ans .= str_repeat($k, $c);
+        }
         rsort($arr);
-        return implode('', $arr);
+        foreach($arr as $c)
+        {
+            if(strpos($ans, $c) === False)
+                $ans .= $c;
+        }
+        return $ans;
     }
 
     /**

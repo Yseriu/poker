@@ -88,5 +88,7 @@ $hand = new hand(['1E', '38', '1A', '25', '1C', '1B', '1D']);
 $hand->sorted() == 'EDCBA85' or die('Erreur Sorted 1');
 $hand = new hand(['27', '37', '17', '16', '15', '14', '47']);
 $hand->sorted() == '7777654' or die('Erreur Sorted 2');
+$hand = new hand(['27', '37', '18', '1E', '2E', '17', '4A']);
+$hand->sorted() == '777EEA8' or die('Erreur Sorted Avancee');
 
 echo 'Tests Passés avec succès';
